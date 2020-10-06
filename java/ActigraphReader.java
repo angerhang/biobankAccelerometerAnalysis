@@ -80,7 +80,7 @@ public class ActigraphReader extends DeviceReader {
             double sampleFreq = -1, accelerationScale = -1, _AccelerationMin, _AccelerationMax;
             long startDate = -1, stopDate = -1, firstSampleTime=-1;
             String serialNumber = "";
-            String infoTimeZone = "01:00:00"; // default to be UTC time difference
+            String infoTimeShift = "01:00:00"; // default to be UTC time difference
 
             while (infoReader.ready()) {
                 String line = infoReader.readLine();
@@ -104,12 +104,12 @@ public class ActigraphReader extends DeviceReader {
                         else if (tokens[0].trim().equals("Serial Number"))
                             serialNumber=tokens[1].trim();
                         else if (tokens[0].trim().equals("TimeZone"))
-                            infoTimeZone=tokens[1].trim();
+                            infoTimeShift=tokens[1].trim(); // gt3x calls time shift as time zone
                     }
                 }
             }
 
-            System.out.println("Timezone: " + infoTimeZone);
+            System.out.println("Timezone: " + infoTimeShift);
             System.out.println("Start date (local UNIX): " + startDate);
             System.out.println("Stop date (local UNIX): " + stopDate);
 
@@ -125,7 +125,7 @@ public class ActigraphReader extends DeviceReader {
             // else leave as specified in info.txt?
             if (gt3Version == VALID_GT3_V1_FILE) readG3TXV1EpochPairs(
                     activityReader,
-                    infoTimeZone,
+                    infoTimeShift,
                     sampleDelta,
                     sampleFreq,
                     accelerationScale,
@@ -133,7 +133,7 @@ public class ActigraphReader extends DeviceReader {
                     epochWriter);
             if (gt3Version == VALID_GT3_V2_FILE) readG3TXV2Epoch(
                     activityReader,
-                    infoTimeZone,
+                    infoTimeShift,
                     sampleDelta,
                     sampleFreq,
                     accelerationScale,
