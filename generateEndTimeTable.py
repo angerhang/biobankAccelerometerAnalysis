@@ -120,3 +120,7 @@ with open(dest_script_dir, 'a') as dest_f:
         
 f.close()
 
+print("cleaning...")
+if os.path.exists(tmp_dir):
+    rmtree(tmp_dir)
+print("Done.")
