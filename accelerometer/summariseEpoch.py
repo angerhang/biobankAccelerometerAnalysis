@@ -90,7 +90,9 @@ def getActivitySummary(epochFile, nonWearFile, summary,
     if startTime:
         e = e[e.index >= startTime]
     if endTime:
-        e = e[e.index <= endTime]
+        localTz = pytz.timezone(timeZone)
+        endTimeWithTz = localTz.localize(endTime)
+        e = e[e.index <= endTimeWithTz]
     # Quit if no data left
     if e.shape[0] == 0:
         print("No rows remaining after start/end time removal")
