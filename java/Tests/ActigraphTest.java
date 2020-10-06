@@ -40,29 +40,29 @@ public class ActigraphTest {
     }
 
     @Test
-    public void activityTimeMoveForward7Hours() {
+    public void activityTimeMoveForward8Hours() {
         long myTime = 1271901600; // peudo-UNIX time
         String timeShift = "08:00:00";
         long targetTime = ActigraphReader.getTrueUnixTime(myTime, timeShift);
-        assertEquals(myTime-7*60*60*1000, targetTime);
+        assertEquals(myTime-8*60*60*1000, targetTime);
+    }
+
+
+    @Test
+    public void activityTimeStayTheSame() {
+        long myTime = 1271901600; // peudo-UNIX time
+        String timeShift = "00:00:00";
+        long targetTime = ActigraphReader.getTrueUnixTime(myTime, timeShift);
+        assertEquals(myTime, targetTime);
     }
 
 
     @Test
     public void activityTimeMoveBack1Hour() {
         long myTime = 1271901600; // peudo-UNIX time
-        String timeShift = "00:00:00";
-        long targetTime = ActigraphReader.getTrueUnixTime(myTime, timeShift);
-        assertEquals(myTime+1*60*60*1000, targetTime);
-    }
-
-
-    @Test
-    public void activityTimeMoveBack2Hour() {
-        long myTime = 1271901600; // peudo-UNIX time
         String timeShift = "-01:00:00";
         long targetTime = ActigraphReader.getTrueUnixTime(myTime, timeShift);
-        assertEquals(myTime+2*60*60*1000, targetTime);
+        assertEquals(myTime+1*60*60*1000, targetTime);
     }
 }
 

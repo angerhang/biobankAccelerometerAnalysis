@@ -80,7 +80,7 @@ public class ActigraphReader extends DeviceReader {
             double sampleFreq = -1, accelerationScale = -1, _AccelerationMin, _AccelerationMax;
             long startDate = -1, stopDate = -1, firstSampleTime=-1;
             String serialNumber = "";
-            String infoTimeShift = "01:00:00"; // default to be UTC time difference
+            String infoTimeShift = "00:00:00"; // default to be UTC time difference
 
             while (infoReader.ready()) {
                 String line = infoReader.readLine();
@@ -467,7 +467,7 @@ public class ActigraphReader extends DeviceReader {
     }
 
 
-    public static long getTrueUnixTime (long myTime, String infoTimeShift) {
+    public static long getTrueUnixTime(long myTime, String infoTimeShift) {
         int shiftSign = 1;
         if (infoTimeShift.charAt(0) == '-') {
             shiftSign = -1;
@@ -476,7 +476,7 @@ public class ActigraphReader extends DeviceReader {
 
         LocalTime timeShift = LocalTime.parse(infoTimeShift);
         long timeShiftMilli = 1000 * (shiftSign * timeShift.getHour() * 60 * 60 +
-                timeShift.getMinute() * 60 + timeShift.getMinute() - 1*60*60); // time shfit w.r.t. UTC
+                timeShift.getMinute() * 60 + timeShift.getMinute()); // time shfit w.r.t. UTC
         return myTime - timeShiftMilli;
     }
 
