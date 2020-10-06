@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(description='---Add end time dynamically to gt3
 parser.add_argument('--dataDir', dest='data_dir',  help='Path to gt3x files')
 parser.add_argument('--script', dest='script_dir',  help='Path to the baseline script')
 parser.add_argument('--destScript', dest='dest_script_dir',  help='Path to the updated script')
+parser.add_argument('--timeShift', dest='timeshift', default=7, type=int, help='How many days to shift')
 
 args = parser.parse_args()
 ## input arguments
@@ -22,6 +23,7 @@ args = parser.parse_args()
 data_dir = args.data_dir
 script_dir = args.script_dir
 dest_script_dir = args.dest_script_dir
+timeshift = timedelta(days=args.timeshift)
 
 
 endTimeFilePath = data_dir + '/endTime.csv'
