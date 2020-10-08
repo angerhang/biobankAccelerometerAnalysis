@@ -61,35 +61,33 @@ startTimes = []
 endTimes = []
 fileNames = []
 
-for current_file in file_list:
-    with zipfile.ZipFile(current_file, 'r') as zip_ref:
-        zip_ref.extractall(tmp_dir)
-    
-    start_date = obtain_start_date(info_txt_dir)
-    localDateTime = GT3XfromTickToMillisecond(start_date)
-    endTime = localDateTime + timeshift
-    startTime = localDateTime.strftime('%Y-%m-%dT%H:%M')
-    endTime = endTime.strftime('%Y-%m-%dT%H:%M')
-    fileName = current_file.split('/')[-1]
-    
-    fileNames.append(fileName)
-    startTimes.append(startTime)
-    endTimes.append(endTime)
-
-
-if os.path.exists(endTimeFilePath):
+if os.path.exists(endTimeFilePath) is False:
     os.remove(endTimeFilePath)
-    
-with open(endTimeFilePath, mode='w') as csv_file:
-    fieldnames = ['file_name', 'startTime', 'endTime']
-    writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-    writer.writeheader()
 
-    for i in range(len(fileNames)):
-        writer.writerow({'file_name': fileNames[i], 
-                         'startTime': startTimes[i], 
-                         'endTime': endTimes[i]})    
+    for current_file in file_list:
+        with zipfile.ZipFile(current_file, 'r') as zip_ref:
+            zip_ref.extractall(tmp_dir)
 
+        start_date = obtain_start_date(info_txt_dir)
+        localDateTime = GT3XfromTickToMillisecond(start_date)
+        endTime = localDateTime + timeshift
+        startTime = localDateTime.strftime('%Y-%m-%dT%H:%M')
+        endTime = endTime.strftime('%Y-%m-%dT%H:%M')
+        fileName = current_file.split('/')[-1]
+
+        fileNames.append(fileName)
+        startTimes.append(startTime)
+        endTimes.append(endTime)
+
+    with open(endTimeFilePath, mode='w') as csv_file:
+        fieldnames = ['file_name', 'startTime', 'endTime']
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for i in range(len(fileNames)):
+            writer.writerow({'file_name': fileNames[i],
+                             'startTime': startTimes[i],
+                             'endTime': endTimes[i]})
 
 # # Modify command line script
 def extract_file_name(command_str):
