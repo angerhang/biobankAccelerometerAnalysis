@@ -101,8 +101,8 @@ def getActivitySummary(epochFile, nonWearFile, summary,
         sys.exit(-9)
 
     # Get start & end times
-    startTime = e.index.values[0]
-    endTime = e.index.values[-1]
+    startTime = e.index[0]
+    endTime = e.index[-1]
     summary['file-startTime'] = accUtils.date_strftime(startTime)
     summary['file-endTime'] = accUtils.date_strftime(endTime)
     summary['file-firstDay(0=mon,6=sun)'] = startTime.weekday()
