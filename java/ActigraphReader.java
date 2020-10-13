@@ -78,7 +78,7 @@ public class ActigraphReader extends DeviceReader {
 
             // underscored are unused for now
             double sampleFreq = -1, accelerationScale = -1, _AccelerationMin, _AccelerationMax;
-            long startDate = -1, stopDate = -1, firstSampleTime=-1;
+            long stopDate = -1, firstSampleTime=-1;
             String serialNumber = "";
             String infoTimeShift = "00:00:00"; // default to be UTC time difference
 
@@ -89,7 +89,7 @@ public class ActigraphReader extends DeviceReader {
                     if ((tokens !=null)  && (tokens.length==2)){
                         if (tokens[0].trim().equals("Sample Rate"))
                             sampleFreq=Integer.parseInt(tokens[1].trim());
-                        else if (tokens[0].trim().equals("First Sample Date"))
+                        else if (tokens[0].trim().equals("Start Date"))
                             firstSampleTime=GT3XfromTickToMillisecond(Long.parseLong(tokens[1].trim()));
                         else if (tokens[0].trim().equals("Acceleration Scale"))
                             accelerationScale=Double.parseDouble(tokens[1].trim());
@@ -97,8 +97,6 @@ public class ActigraphReader extends DeviceReader {
                             _AccelerationMin=Double.parseDouble(tokens[1].trim());
                         else if (tokens[0].trim().equals("Acceleration Max"))
                             _AccelerationMax=Double.parseDouble(tokens[1].trim());
-                        else if (tokens[0].trim().equals("Start Date"))
-                            startDate=GT3XfromTickToMillisecond(Long.parseLong(tokens[1].trim()));
                         else if (tokens[0].trim().equals("Stop Date"))
                             stopDate=GT3XfromTickToMillisecond(Long.parseLong(tokens[1].trim()));
                         else if (tokens[0].trim().equals("Serial Number"))
@@ -110,7 +108,7 @@ public class ActigraphReader extends DeviceReader {
             }
 
             System.out.println("Timezone: " + infoTimeShift);
-            System.out.println("Start date (local UNIX): " + startDate);
+            System.out.println("Start date (local UNIX): " + firstSampleTime);
             System.out.println("Stop date (local UNIX): " + stopDate);
 
             accelerationScale = setAccelerationScale(serialNumber);
