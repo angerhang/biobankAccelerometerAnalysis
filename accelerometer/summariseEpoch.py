@@ -272,8 +272,8 @@ def get_wear_time_stats(e, epochPeriod, maxStd, minDuration, nonWearFile,
         e['enmoTrunc'].groupby([e.index.hour, e.index.minute]).mean().count(), 2)
 
     # Write binary decision on whether weartime was good or not
-    minDiurnalHrs = 24
-    minWearDays = 3
+    minDiurnalHrs = 5
+    minWearDays = 1
     summary['quality-goodWearTime'] = 1
     if summary['wearTime-diurnalHrs'] < minDiurnalHrs or \
          summary['wearTime-overall(days)'] < minWearDays:
