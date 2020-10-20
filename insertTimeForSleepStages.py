@@ -25,6 +25,7 @@ data_dir = args.data_dir
 script_dir = args.script_dir
 dest_script_dir = args.dest_script_dir
 sleep_time_dir = args.sleep_dir
+missing_file_dir = data_dir + "filesWithoutLabels.pkl"
 
 
 ## Modify command line script
@@ -48,12 +49,16 @@ k = 0
 if os.path.exists(dest_script_dir):
     os.remove(dest_script_dir)
 
+missing_sleep_labels = []
 with open(dest_script_dir, 'a') as dest_f:
     for x in f:
         my_file_name = extract_file_name(x)
         my_id = get_subjectID(my_file_name)
         result = sleepDf[sleepDf['subject_id'] == int(my_id)]
 
+        if len(result) == 0:
+            missing_sleep_labels.append(my_file_name)
+            continue
         my_start_time = result.iloc[0]['start_time']
         my_end_time = result.iloc[0]['end_time']
 
@@ -69,3 +74,8 @@ with open(dest_script_dir, 'a') as dest_f:
         dest_f.write(x)
         
 f.close()
+
+import pickle
+
+with open(missing_file_dir, 'wb') as fp:
+    pickle.dump(missing_sleep_labels, fp)
