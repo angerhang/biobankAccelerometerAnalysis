@@ -166,9 +166,9 @@ def processInputFileToEpoch(inputFile, timeZone, timeShift,
         if javaHeapSpace:
             commandArgs.insert(1, javaHeapSpace)
         if startTime:
-            commandArgs.append("startTime:" + startTime.strftime("%Y-%m-%dT%H:%M"))
+            commandArgs.append("startTime:" + startTime.strftime("%Y-%m-%dT%H:%M:%S"))
         if endTime:
-            commandArgs.append("endTime:" + endTime.strftime("%Y-%m-%dT%H:%M"))
+            commandArgs.append("endTime:" + endTime.strftime("%Y-%m-%dT%H:%M:%S"))
         if csvStartTime:
             commandArgs.append("csvStartTime:" + csvStartTime.strftime("%Y-%m-%dT%H:%M"))
         if csvSampleRate:

@@ -313,8 +313,8 @@ def main():
     if args.startTime and args.endTime:
         assert args.startTime <= args.endTime, (
             "startTime and endTime arguments are invalid!\n"
-            f"startTime: {args.startTime.strftime('%Y-%m-%dT%H:%M')}\n"
-            f"endTime:, {args.endTime.strftime('%Y-%m-%dT%H:%M')}\n"
+            f"startTime: {args.startTime.strftime('%Y-%m-%dT%H:%M:%S')}\n"
+            f"endTime:, {args.endTime.strftime('%Y-%m-%dT%H:%M:%S')}\n"
         )
 
     # Print processing options to screen
