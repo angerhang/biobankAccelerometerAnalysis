@@ -44,13 +44,13 @@ def main():
                             minutes. Not to be confused with timezone offsets.
                             (default : %(default)s""")
     parser.add_argument('--startTime',
-                            metavar='e.g. 1991-01-01T23:59', default=None,
-                            type=str2date, help="""removes data before this
+                            metavar='e.g. 1991-01-01T23:59:59', default=None,
+                            type=str2dateSecond, help="""removes data before this
                             time (local) in the final analysis
                             (default : %(default)s)""")
     parser.add_argument('--endTime',
-                            metavar='e.g 1991-01-01T23:59', default=None,
-                            type=str2date, help="""removes data after this
+                            metavar='e.g 1991-01-01T23:59:59', default=None,
+                            type=str2dateSecond, help="""removes data after this
                             time (local) in the final analysis
                             (default : %(default)s)""")
     parser.add_argument('--timeSeriesDateColumn',
@@ -395,6 +395,32 @@ def str2bool(v):
 
     return v.lower() in ("yes", "true", "t", "1")
 
+
+def str2dateSecond(v):
+    """
+    Used to parse date values from the command line. E.g. "1994-11-30T12:00" -> time.datetime
+    """
+
+    eg = "1994-11-30T12:00:00"  # example date
+    if v.count("-")!=eg.count("-"):
+        print("ERROR: Not enough dashes in date")
+    elif v.count("T")!=eg.count("T"):
+        print("ERROR: No T seperator in date")
+    elif v.count(":")!=eg.count(":"):
+        print("ERROR: No ':' seperator in date")
+    elif len(v.split("-")[0])!=4:
+        print("ERROR: Year in date must be 4 numbers")
+    elif len(v.split("-")[1])!=2 and len(v.split("-")[1])!=1:
+        print("ERROR: Month in date must be 1-2 numbers")
+    elif len(v.split("-")[2].split("T")[0])!=2 and len(v.split("-")[2].split("T")[0])!=1:
+        print("ERROR: Day in date must be 1-2 numbers")
+    else:
+        return pd.datetime.strptime(v, "%Y-%m-%dT%H:%M:%S")
+    print("Please change your input date:")
+    print('"'+v+'"')
+    print("to match the example date format:")
+    print('"'+eg+'"')
+    raise ValueError("Date in incorrect format")
 
 def str2date(v):
     """
