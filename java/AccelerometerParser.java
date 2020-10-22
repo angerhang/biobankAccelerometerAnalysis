@@ -95,7 +95,7 @@ public class AccelerometerParser {
 			accFile = args[0];
 			outputFile = accFile.split("\\.")[0] + "Epoch.csv";
 			functionParameters = Arrays.copyOfRange(args, 1, args.length);
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-d'T'H:m");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 			// update default values by looping through available user
