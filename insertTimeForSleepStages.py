@@ -66,8 +66,8 @@ with open(dest_script_dir, 'a') as dest_f:
         my_end_time = datetime.strptime(my_end_time, '%Y-%m-%d %H:%M:%S')
         my_end_time = my_end_time + timedelta(minutes=2)
 
-        my_start_time = my_start_time.strftime('%Y-%m-%dT%H:%M')
-        my_end_time = my_end_time.strftime('%Y-%m-%dT%H:%M')
+        my_start_time = my_start_time.strftime('%Y-%m-%dT%H:%M:%S')
+        my_end_time = my_end_time.strftime('%Y-%m-%dT%H:%M:%S')
         x = x[:-1] # remove line break
         x = x + ' --startTime ' + my_start_time
         x = x + ' --endTime ' + my_end_time + '\n'
