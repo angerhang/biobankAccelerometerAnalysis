@@ -62,7 +62,7 @@ endTimes = []
 fileNames = []
 
 if os.path.exists(endTimeFilePath) is False:
-    os.remove(endTimeFilePath)
+    #os.remove(endTimeFilePath)
 
     for current_file in file_list:
         with zipfile.ZipFile(current_file, 'r') as zip_ref:

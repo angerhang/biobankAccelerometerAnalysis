@@ -473,8 +473,8 @@ public class ActigraphReader extends DeviceReader {
         }
 
         LocalTime timeShift = LocalTime.parse(infoTimeShift);
-        long timeShiftMilli = 1000 * (shiftSign * timeShift.getHour() * 60 * 60 +
-                timeShift.getMinute() * 60 + timeShift.getMinute()); // time shfit w.r.t. UTC
+        long timeShiftMilli = 1000 * shiftSign * (timeShift.getHour() * 60 * 60 +
+                timeShift.getMinute() * 60); // time shfit w.r.t. UTC
         return myTime - timeShiftMilli;
     }
 
