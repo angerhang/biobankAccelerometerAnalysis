@@ -19,3 +19,6 @@ __pycache__
 *.classpath
 *.npz
 *.npy
+*.bin
+*~
+*.txt
