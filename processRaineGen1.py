@@ -1,7 +1,7 @@
 from accelerometer import accUtils
 accUtils.writeStudyAccProcessCmds("/well/doherty/projects/raine/gen1_26/gt3x/wrist/",
                                   cmdsFile="process-raine-gen1-cmds.txt",
-                                  outDir="/well/doherty/projects/raine/gen1_26/gt3x/wrist/baseline_oct8",
+                                  outDir="/well/doherty/projects/raine/gen1_26/gt3x/wrist/sleepNov3",
                                   accExt="gt3x",
                                   cmdOptions="--deleteIntermediateFiles False "+
                                              "--timeZone Australia/Perth "+
