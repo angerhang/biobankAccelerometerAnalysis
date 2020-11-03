@@ -107,7 +107,7 @@ public class ActigraphReader extends DeviceReader {
                 }
             }
 
-            System.out.println("Timezone: " + infoTimeShift);
+            System.out.println("Device's initial time shift: " + infoTimeShift);
             System.out.println("Start date (local UNIX): " + firstSampleTime);
             System.out.println("Stop date (local UNIX): " + stopDate);
 
