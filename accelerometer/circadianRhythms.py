@@ -103,10 +103,15 @@ def calculateM10L5(e, epochPeriod, summary):
         dct_10['%s' %i] = [sum(dct['%s' %i][j:j+TEN_HOURS]) for j in range(len(dct['%s' %i])-TEN_HOURS)]
         dct_5['%s' %i] = [sum(dct['%s' %i][j:j+FIVE_HOURS]) for j in range(len(dct['%s' %i])-FIVE_HOURS)]
     avg_10 = {}
+    avg_10_onset = {}
     avg_5 = {}
-    #   average acceleration (for each 30s) for the max and min windows        
+    avg_5_onset = {}
+
+    #   average acceleration (for each 30s) for the max and min windows
+    # IS and IV are computed using hourly means according to the link below
+    # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4890079/
     for i in dct:
-        avg_10['%s' %i ] = (np.max(dct_10['%s' %i]))/TEN_HOURS
+        avg_10['%s' %i] = (np.max(dct_10['%s' %i]))/TEN_HOURS
     for i in dct:
         avg_5['%s' %i] = (np.min(dct_5['%s' %i]))/FIVE_HOURS
 
@@ -117,3 +122,5 @@ def calculateM10L5(e, epochPeriod, summary):
     if num_days < 1:
         rel_amp = 'NA_too_few_days'
     summary['M10L5'] = rel_amp
+    summary['M10AVG'] = M10
+    summary['L5AVG'] = L5
