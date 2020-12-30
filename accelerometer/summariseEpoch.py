@@ -19,7 +19,7 @@ def getActivitySummary(epochFile, nonWearFile, summary,
     mgCutPointMVPA=100, mgCutPointVPA=425,
     activityModel="activityModels/walmsley-nov20.tar",
     intensityDistribution=False, useRecommendedImputation=True,
-    psd=False, fourierFrequency=False, fourierWithAcc=False, m10l5=False,
+    psd=False, fourierFrequency=False, fourierWithAcc=False, m10l5=False, isiv=False,
     verbose=False):
     """Calculate overall activity summary from <epochFile> data
 
@@ -149,6 +149,8 @@ def getActivitySummary(epochFile, nonWearFile, summary,
         circadianRhythms.calculateFourierFreq(e, epochPeriod, fourierWithAcc, labels, summary)
     if m10l5:
         circadianRhythms.calculateM10L5(e, epochPeriod, summary)
+    if isiv:
+        circadianRhythms.calculatISIV(e, summary)
 
     # Main movement summaries
     writeMovementSummaries(e, labels, summary, useRecommendedImputation)
