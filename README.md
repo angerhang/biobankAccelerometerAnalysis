@@ -32,7 +32,7 @@ You need two files from one participant to generate the stats and plot that you 
 
 Steps to follow:
 1. Move these two files into the `data` folder.
-2. Run `python3 accProcess.py ucl.cwa --circadianRhythm True --sleepDiaryPath ucl_sleep_diary.csv`
+2. Run `python3 accProcess.py ucl.cwa.gz --circadianRhythm True --sleepDiaryPath ucl_sleep_diary.csv`
 Please replace the cwa and diary name accordingly. 
 3.  You should generate something like `ucl-summary.json` after a couple of minutes. Open it 
 using any text editor of your choice, you should find all the sleep parameters you need. Just search for
