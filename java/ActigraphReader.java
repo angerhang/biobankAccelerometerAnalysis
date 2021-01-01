@@ -381,7 +381,7 @@ public class ActigraphReader extends DeviceReader {
                     double z = twoSamples[5-twoSampleCounter*3];
                     double temp = 1.0d; // don't know temp yet
                     time = getTrueUnixTime(time, infoTimeShift);
-                    epochWriter.newValues(time, x, y, z, temp, errCounter);
+                    epochWriter.newValues(time, x, y, z, temp, 0, errCounter);
 
                     samples += 1;
                 }
@@ -453,7 +453,7 @@ public class ActigraphReader extends DeviceReader {
                 samples += 1;
                 long myTime = Math.round((1000d*samples)/sampleFreq) + firstSampleTime*1000; // in Miliseconds
                 myTime = getTrueUnixTime(myTime, infoTimeShift);
-                epochWriter.newValues(myTime, sample[1], sample[0], sample[2], temp, errCounter);
+                epochWriter.newValues(myTime, sample[1], sample[0], sample[2], temp, 0, errCounter);
             }
         } catch (IOException ex) {
             ex.printStackTrace(System.err);
@@ -526,7 +526,7 @@ public class ActigraphReader extends DeviceReader {
                 logger.log(Level.FINER, "i: " + i + "\nx y z: " + sample[0] + " " + sample[1] + " " + sample[2] +
                         "\nTime:" + myTime);
                 epochWriter.newValues(myTime,
-                                      sample[0], sample[1], sample[2], temp, errCounter);
+                                      sample[0], sample[1], sample[2], temp, 0, errCounter);
             }
         } catch (IOException ex) {
             ex.printStackTrace(System.err);

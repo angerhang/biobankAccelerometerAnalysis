@@ -31,6 +31,7 @@ public class EpochWriter {
 	private List<Double> xVals = new ArrayList<Double>();
 	private List<Double> yVals = new ArrayList<Double>();
 	private List<Double> zVals = new ArrayList<Double>();
+	private List<Double> luxVals = new ArrayList<Double>();
 	private List<Double> temperatureVals = new ArrayList<Double>();
 	private final int minSamplesForEpoch = 10;
 
@@ -120,7 +121,7 @@ public class EpochWriter {
 		String epochHeader = "time";
 		epochHeader += "," + AccStats.getStatsHeader(getFeatures, numFFTbins);
     	epochHeader += ",temp,samples";
-		epochHeader += ",dataErrors,clipsBeforeCalibr,clipsAfterCalibr,rawSamples";
+		epochHeader += ",dataErrors,clipsBeforeCalibr,clipsAfterCalibr,rawSamples,lux";
 
 		writeLine(epochFileWriter, epochHeader);
 
@@ -138,6 +139,7 @@ public class EpochWriter {
 			double y,
 			double z,
 			double temperature,
+			double lux,
 			int[] errCounter) {
 
 		if (startTime!=UNUSED_DATE && time<startTime) {
@@ -178,7 +180,7 @@ public class EpochWriter {
 			if (timeVals.size()>minSamplesForEpoch) {
 				writeEpochSummary(millisToZonedDateTime(epochStartTime), timeVals,
 				// writeEpochSummary(millisToInstant(epochStartTime), timeVals,
-					xVals, yVals, zVals, temperatureVals, errCounter);
+					xVals, yVals, zVals, temperatureVals, luxVals, errCounter);
 			} else {
 				System.err.println("not enough samples for an epoch.. discarding " +
 					timeVals.size()+" samples");
@@ -186,6 +188,7 @@ public class EpochWriter {
 				xVals.clear();
 				yVals.clear();
 				zVals.clear();
+				luxVals.clear();
 				temperatureVals.clear();
 				errCounter[0] = 0;
 			}
@@ -205,11 +208,12 @@ public class EpochWriter {
 				xVals.add(x);
 				yVals.add(y);
 				zVals.add(z);
+				luxVals.add(lux);
 				temperatureVals.add(temperature);
 			}
 			writeEpochSummary(millisToZonedDateTime(epochStartTime), timeVals,
 			// writeEpochSummary(millisToInstant(epochStartTime), timeVals,
-				xVals, yVals, zVals, temperatureVals, errCounter);
+				xVals, yVals, zVals, temperatureVals, luxVals, errCounter);
 
 			epochStartTime = epochStartTime + epochPeriod * 1000;
 
@@ -221,6 +225,7 @@ public class EpochWriter {
 				yVals.add(prevXYZT[1]);
 				zVals.add(prevXYZT[2]);
 				temperatureVals.add(prevXYZT[3]);
+				luxVals.add(prevXYZT[4]);
 			}
 		}
 		if (endTime!=UNUSED_DATE && time>endTime) {
@@ -241,8 +246,9 @@ public class EpochWriter {
 		yVals.add(y);
 		zVals.add(z);
 		temperatureVals.add(temperature);
+		luxVals.add(lux);
 		prevTimeVal = time;
-		prevXYZT = new double[]{x, y, z, temperature};
+		prevXYZT = new double[]{x, y, z, temperature, lux};
 		return true;
 	}
 
@@ -264,6 +270,7 @@ public class EpochWriter {
 			List<Double> yVals,
 			List<Double> zVals,
 			List<Double> temperatureVals,
+			List<Double> luxVals,
 			int[] errCounter) {
 
 		int[] clipsCounter = new int[] { 0, 0 }; // before, after (calibration)
@@ -366,7 +373,7 @@ public class EpochWriter {
 		epochSummary += "," + DF2.format(AccStats.mean(temperatureVals));
 		epochSummary += "," + xResampled.length + "," + errCounter[0];
 		epochSummary += "," + clipsCounter[0] + "," + clipsCounter[1];
-		epochSummary += "," + timeVals.size();
+		epochSummary += "," + timeVals.size() + "," + DF2.format(AccStats.mean(luxVals));
 
 		//write line to file...
 		double xStd = stats[8]; //needed to identify stationary episodes

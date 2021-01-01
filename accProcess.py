@@ -193,6 +193,10 @@ def main():
                             help="""Calculate relative amplitude of most and
                                     least active acceleration periods for circadian rhythm analysis
                              (default : %(default)s)""")
+    parser.add_argument('--isiv',
+                        metavar='True/False', default=False, type=str2bool,
+                        help="""Calculate inter-daily stability and intra-daily variability
+                             (default : %(default)s)""")
     # optional outputs
     parser.add_argument('--outputFolder', metavar='filename',default="",
                             help="""folder for all of the output files, \
@@ -364,7 +368,7 @@ def main():
         intensityDistribution=args.intensityDistribution,
         useRecommendedImputation=args.useRecommendedImputation,
         psd=args.psd, fourierFrequency=args.fourierFrequency,
-        fourierWithAcc=args.fourierWithAcc, m10l5=args.m10l5,
+        fourierWithAcc=args.fourierWithAcc, m10l5=args.m10l5, isiv=args.isiv,
         verbose=args.verbose)
 
     # Generate time series file

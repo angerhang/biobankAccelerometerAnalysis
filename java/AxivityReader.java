@@ -13,7 +13,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.zone.ZoneRules;
 import java.util.zip.GZIPInputStream;
-
+import java.lang.Math;
 
 /**
  * Calculates epoch summaries from an AX3 .CWA file.
@@ -161,7 +161,11 @@ public class AxivityReader extends DeviceReader {
             try {
                 // read block header items
                 long blockTimestamp = getUnsignedInt(buf, 14);
-                int light = getUnsignedShort(buf, 18);
+                int light = getUnsignedShort(buf, 18) & ((0 << 10)-1);
+                double lux = light;
+                // double logLux = ((light + 512.0) * 6000 / 1024);
+                // double lux = Math.pow(10, logLux / 1000.0);
+
                 double temperature = (getUnsignedShort(buf, 20) * 150.0 - 20500) / 1000;
                 short rateCode = (short) (buf.get(24) & 0xff);
                 short numAxesBPS = (short) (buf.get(25) & 0xff);
@@ -319,8 +323,7 @@ public class AxivityReader extends DeviceReader {
                     z = zRaw / 256.0;
                     t = zonedWithDSTCorrection(blockTime).toInstant().toEpochMilli();
 
-                    epochWriter.newValues(t, x, y, z, temperature, errCounter);
-
+                    epochWriter.newValues(t, x, y, z, temperature, lux, errCounter);
                 }
             } catch (Exception excep) {
                 excep.printStackTrace(System.err);

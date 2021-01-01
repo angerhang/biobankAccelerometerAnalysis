@@ -101,7 +101,7 @@ public class GENEActivReader extends DeviceReader {
                     y = (yRaw * 100.0d - mfrOffset[1]) / mfrGain[1];
                     z = (zRaw * 100.0d - mfrOffset[2]) / mfrGain[2];
 
-                    epochWriter.newValues(getEpochMillis(blockTime), x, y, z, temperature, errCounter);
+                    epochWriter.newValues(getEpochMillis(blockTime), x, y, z, temperature, 0, errCounter);
 
                     hexPosition += 12;
                     blockTime = blockTime.plusNanos(secs2Nanos(1.0 / sampleFreq));

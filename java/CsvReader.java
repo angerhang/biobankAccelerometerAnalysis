@@ -70,7 +70,7 @@ public class CsvReader extends DeviceReader {
                 x = Double.parseDouble(cols[xCol]);
                 y = Double.parseDouble(cols[yCol]);
                 z = Double.parseDouble(cols[zCol]);
-                epochWriter.newValues(time, x, y, z, 0, new int[] {0});                
+                epochWriter.newValues(time, x, y, z, 0, 0, new int[] {0});
             }
 
         } catch (Exception excep) {

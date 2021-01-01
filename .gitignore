@@ -19,5 +19,7 @@ __pycache__
 *.classpath
 *.npz
 *.npy
+*.idea
+*.ipynb_checkpoints
 !referenceFiles/epoch.csv.gz
 
