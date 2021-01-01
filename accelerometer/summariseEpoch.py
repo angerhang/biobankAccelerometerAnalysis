@@ -19,8 +19,8 @@ def getActivitySummary(epochFile, nonWearFile, summary,
     mgCutPointMVPA=100, mgCutPointVPA=425,
     activityModel="activityModels/walmsley-nov20.tar",
     intensityDistribution=False, useRecommendedImputation=True,
-    psd=False, fourierFrequency=False, fourierWithAcc=False, m10l5=False, isiv=False,
-    verbose=False):
+    psd=False, fourierFrequency=False, fourierWithAcc=False, circadianRhythm=False,
+    sleepDiaryPath=None, verbose=False):
     """Calculate overall activity summary from <epochFile> data
 
     Get overall activity summary from input <epochFile>. This is achieved by
@@ -147,10 +147,19 @@ def getActivitySummary(epochFile, nonWearFile, summary,
         circadianRhythms.calculatePSD(e, epochPeriod, fourierWithAcc, labels, summary)
     if fourierFrequency:
         circadianRhythms.calculateFourierFreq(e, epochPeriod, fourierWithAcc, labels, summary)
-    if m10l5:
+
+    if circadianRhythm:
         circadianRhythms.calculateM10L5(e, epochPeriod, summary)
-    if isiv:
-        circadianRhythms.calculatISIV(e, summary)
+        circadianRhythms.calculateISIV(e, summary)
+        circadianRhythms.calculateLux(e, summary)
+    if sleepDiaryPath:
+        diary_tz = 'Europe/London'
+        sleep_diary = pd.read_csv(sleepDiaryPath)
+        sleep_diary['Time_in_bed'] = pd.to_datetime(sleep_diary['Time_in_bed'])
+        sleep_diary['Time_in_bed'] = sleep_diary['Time_in_bed'].dt.tz_localize(diary_tz)
+        sleep_diary['Time_out_of_bed'] = pd.to_datetime(sleep_diary['Time_out_of_bed'])
+        sleep_diary['Time_out_of_bed'] = sleep_diary['Time_out_of_bed'].dt.tz_localize(diary_tz)
+        circadianRhythms.calculateSleepEfficiency(e, epochPeriod, summary, sleep_diary)
 
     # Main movement summaries
     writeMovementSummaries(e, labels, summary, useRecommendedImputation)

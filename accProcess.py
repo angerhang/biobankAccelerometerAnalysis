@@ -188,15 +188,13 @@ def main():
                             help="""True will do the Fourier analysis of circadian rhythms (for PSD and Fourier Frequency) with
                                     acceleration data instead of sleep signal
                              (default : %(default)s)""")
-    parser.add_argument('--m10l5',
+    parser.add_argument('--circadianRhythm',
                             metavar='True/False', default=False, type=str2bool,
-                            help="""Calculate relative amplitude of most and
-                                    least active acceleration periods for circadian rhythm analysis
+                            help="""Calculate a series of circadian rhythm parameters.
                              (default : %(default)s)""")
-    parser.add_argument('--isiv',
-                        metavar='True/False', default=False, type=str2bool,
-                        help="""Calculate inter-daily stability and intra-daily variability
-                             (default : %(default)s)""")
+    parser.add_argument('--sleepDiaryPath',
+                        metavar='filename', default="", type=str,
+                        help="""Path to self-report time-in-bed and time-out-of-bed diary.""")
     # optional outputs
     parser.add_argument('--outputFolder', metavar='filename',default="",
                             help="""folder for all of the output files, \
@@ -368,8 +366,8 @@ def main():
         intensityDistribution=args.intensityDistribution,
         useRecommendedImputation=args.useRecommendedImputation,
         psd=args.psd, fourierFrequency=args.fourierFrequency,
-        fourierWithAcc=args.fourierWithAcc, m10l5=args.m10l5, isiv=args.isiv,
-        verbose=args.verbose)
+        fourierWithAcc=args.fourierWithAcc, circadianRhythm=args.circadianRhythm,
+        sleepDiaryPath=args.sleepDiaryPath, verbose=args.verbose)
 
     # Generate time series file
     accelerometer.accUtils.writeTimeSeries(epochData, labels, args.tsFile)

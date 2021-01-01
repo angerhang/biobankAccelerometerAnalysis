@@ -208,7 +208,11 @@ public class EpochWriter {
 				xVals.add(x);
 				yVals.add(y);
 				zVals.add(z);
-				luxVals.add(lux);
+				if (luxVals.size() == 0) {
+					luxVals.add(lux);
+				} else {
+					luxVals.add(lux+luxVals.get(luxVals.size()-1));
+				}
 				temperatureVals.add(temperature);
 			}
 			writeEpochSummary(millisToZonedDateTime(epochStartTime), timeVals,
@@ -246,7 +250,11 @@ public class EpochWriter {
 		yVals.add(y);
 		zVals.add(z);
 		temperatureVals.add(temperature);
-		luxVals.add(lux);
+		if (luxVals.size() == 0) {
+			luxVals.add(lux);
+		} else {
+			luxVals.add(lux+luxVals.get(luxVals.size()-1));
+		}
 		prevTimeVal = time;
 		prevXYZT = new double[]{x, y, z, temperature, lux};
 		return true;
@@ -373,7 +381,15 @@ public class EpochWriter {
 		epochSummary += "," + DF2.format(AccStats.mean(temperatureVals));
 		epochSummary += "," + xResampled.length + "," + errCounter[0];
 		epochSummary += "," + clipsCounter[0] + "," + clipsCounter[1];
-		epochSummary += "," + timeVals.size() + "," + DF2.format(AccStats.mean(luxVals));
+		// System.out.println(AccStats.mean(luxVals));
+		// last element is the num of lux because getter method takes too long
+		if (luxVals.size() == 0) {
+			epochSummary += "," + timeVals.size() + "," + DF2.format(0);
+		} else {
+			epochSummary += "," + timeVals.size() + "," +
+					DF2.format((luxVals.get(luxVals.size()-1)*1.0)/luxVals.size());
+		}
+
 
 		//write line to file...
 		double xStd = stats[8]; //needed to identify stationary episodes

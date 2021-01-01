@@ -43,7 +43,6 @@ def calculatePSD(e, epochPeriod, fourierWithAcc, labels, summary):
     summary['PSD'] = PSD
 
 
-
 def calculateFourierFreq(e, epochPeriod, fourierWithAcc, labels, summary):
     """Calculate the most prevalent frequency in a fourier analysis 
     
@@ -113,7 +112,32 @@ def min2hour(time):
     return '%02i:%02i:00' % (h, m)
 
 
-def calculatISIV(e, summary):
+def calculateSleepEfficiency(e, epochPeriod, summary, sleep_diary):
+    """ Average sleep efficiency based on a self-report sleep diary
+
+    :param pandas.DataFrame e: Pandas dataframe of epoch data
+    :param int epochPeriod: Size of epoch time window (in seconds)
+    :param dict summary: Output dictionary containing all summary metrics
+    :param pandas.DataFrame sleep_diary: Time in bed and time out of bed table
+
+    :return: Write dict <summary> key 'circadianRhythms_SleepEfficiency'
+    """
+
+    sleep_efficiencies = []
+    for index, row in sleep_diary.iterrows():
+        end_time = row['Time_out_of_bed']
+        start_time = row['Time_in_bed']
+        total_time_in_bed = (end_time - start_time).seconds//60
+        end_time
+        valid_epoch = e.loc[(e.index >= start_time) & (e.index <= end_time)]
+        sleep_length = len(valid_epoch[valid_epoch['label'] == 'sleep']) * epochPeriod/60
+        sleep_efficiency = sleep_length/total_time_in_bed
+        sleep_efficiency = min(sleep_efficiency, 1)
+        sleep_efficiencies.append(sleep_efficiency)
+    summary['circadianRhythms_sleep_efficiency'] = np.mean(sleep_efficiencies)
+
+
+def calculateISIV(e, summary):
     """  IS and IV are computed using hourly means according to the link below
     https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4890079/
 
@@ -159,6 +183,22 @@ def calculatISIV(e, summary):
         start_time = end_time
     summary['circadianRhythms_IS'] = var_daily/(total_var*P)
     summary['circadianRhythms_IV'] = total_hour_diff/(total_hour_diff*(N-1))
+
+
+def calculateLux(e, summary):
+    """Calculates the average lux
+
+    :param pandas.DataFrame e: Pandas dataframe of epoch data
+    :param int epochPeriod: Size of epoch time window (in seconds)
+    :param dict summary: Output dictionary containing all summary metrics
+
+    :return: Write dict <summary> keys average lux
+    """
+
+    lux = e['lux'].mean()
+    log_lux = ((lux + 512.0) * 6000 / 1024)
+    true_lux = 10 ** (log_lux / 1000.0)
+    summary['circadianRhythms_lux'] = true_lux
 
 
 def calculateM10L5(e, epochPeriod, summary):

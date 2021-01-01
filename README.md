@@ -5,6 +5,10 @@ A tool to extract meaningful health information from large accelerometer dataset
 ![Build status](https://github.com/activityMonitoring/biobankAccelerometerAnalysis/workflows/CI/badge.svg)
 
 ## Installation
+If you don't have python installed, please download [Miniconda](https://docs.conda.io/en/latest/miniconda.html) first.
+Then, create a python 3 environment using `conda create -n dreams python=3.6`. Before you run your analysis,
+make sure that you do `conda activate dreams` first.
+
 Dependencies include: unix, java 8 ([Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)) and python 3.7 ([Anaconda's Python 3](https://www.anaconda.com/download/) or installation via [Brew](https://docs.python-guide.org/starting/install3/osx/) should do the trick).
 ```
 $ git clone https://github.com/activityMonitoring/biobankAccelerometerAnalysis.git
@@ -21,6 +25,27 @@ $ pip3 install --user .
 $ javac -cp java/JTransforms-3.1-with-dependencies.jar java/*.java
 ```
 
+### For UCL project 
+You need two files from one participant to generate the stats and plot that you want. 
+1. The cwa file from the accelerometer.
+2. The sleep-diary in a csv format.
+
+Steps to follow:
+1. Move these two files into the `data` folder.
+2. Run `python3 accProcess.py ucl.cwa --circadianRhythm True --sleepDiaryPath ucl_sleep_diary.csv`
+Please replace the cwa and diary name accordingly. 
+3.  You should generate something like `ucl-summary.json` after a couple of minutes. Open it 
+using any text editor of your choice, you should find all the sleep parameters you need. Just search for
+`circadianRhythms_SleepEfficiency`, `circadianRhythms_IS`, `circadianRhythms_IV`, `circadianRhythms_lux`,
+`circadianRhythms_M10L5_Rel_AMP`, `circadianRhythms_M10AVG`, `circadianRhythms_L5AVG`, `circadianRhythms_M10_Onset`,
+`circadianRhythms_L5_Onset`.
+4. To generate the visu, run `python3 accPlot.py ucl-timeSeries.csv.gz ucl-plot.png`
+
+Sleep-diary style guide:
+You need to closely follow the csv file provided to make sure that you can get your parameter estimates properly.
+All the time format needs to be in `YYYY-MM-DD HH:MM` e.g. 2020-12-12 21:05 2020-12-12 05:05 or 2020-12-12 5:05.
+Ensure no extra line at the end of the file. If there is no entry for a date or just only time in bed or 
+time out of bed, please do not put them in the diary. Only complete recordings are needed.
 
 ## Usage
 To extract a summary of movement (average sample vector magnitude) and
