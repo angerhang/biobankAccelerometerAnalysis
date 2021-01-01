@@ -11,7 +11,7 @@ make sure that you do `conda activate dreams` first.
 
 Dependencies include: unix, java 8 ([Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)) and python 3.7 ([Anaconda's Python 3](https://www.anaconda.com/download/) or installation via [Brew](https://docs.python-guide.org/starting/install3/osx/) should do the trick).
 ```
-$ git clone https://github.com/activityMonitoring/biobankAccelerometerAnalysis.git
+$ git clone -b dreams https://github.com/angerhang/biobankAccelerometerAnalysis.git
 $ bash utilities/downloadDataModels.sh
 $ pip3 install --user .
 $ javac -cp java/JTransforms-3.1-with-dependencies.jar java/*.java
