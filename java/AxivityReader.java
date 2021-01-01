@@ -161,8 +161,8 @@ public class AxivityReader extends DeviceReader {
             try {
                 // read block header items
                 long blockTimestamp = getUnsignedInt(buf, 14);
-                int light = getUnsignedShort(buf, 18) & ((0 << 10)-1);
-                double lux = light;
+                int light = getUnsignedShort(buf, 18)  & 0x3FF;
+                double lux = light & 0x3FF;
                 // double logLux = ((light + 512.0) * 6000 / 1024);
                 // double lux = Math.pow(10, logLux / 1000.0);
 
