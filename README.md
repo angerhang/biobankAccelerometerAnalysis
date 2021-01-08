@@ -16,15 +16,7 @@ $ bash utilities/downloadDataModels.sh
 $ pip install --user .
 $ javac -cp java\JTransforms-3.1-with-dependencies.jar java\*.java
 ```
-
-**Note a new dependency was introduced in November 2020. You therefore need to download the updated files to achieve this**.
-```
-$ git pull
-$ bash utilities/downloadDataModels.sh
-$ pip3 install --user .
-$ javac -cp java\JTransforms-3.1-with-dependencies.jar java\*.java
-```
-
+You might want to run the bash script in Cygwin if you are on Windows.
 
 ### UCL project setup
 You need two files from one participant to generate the stats and plot that you want. 

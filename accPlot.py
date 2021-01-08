@@ -24,7 +24,7 @@ WILLETS_SciReports_COLOURS = {'sleep':'blue', 'sit.stand':'red',
     'bicycling':'purple'}
 
 WALMSLEY_Nov2020_COLOURS = {'sleep':'blue', 'sedentary':'red',
-    'light':'darkorange', 'MVPA':'green'}
+    'light':'green', 'MVPA':'green'}
 
 
 def main():
@@ -218,12 +218,22 @@ def plotTimeSeries(
     ax.axis('off') # don't display axis information
     # create a 'patch' for each legend entry
     legend_patches = [mpatches.Patch(color=labels_as_col['imputed'],
-                                     label='imputed', alpha=1.0),
-                      mlines.Line2D([],[],color='k',label='acceleration')]
+                                     label='not recorded', alpha=1.0),
+                      mlines.Line2D([],[],color='k',label='movement')]
     # create lengend entry for each label
+    ucl_labels = {
+        'sleep': 'possible sleep',
+        'imputed': 'not recorded',
+        'acceleration': 'movement',
+        'MVPA': 'moving a lot',
+        "sedentary": 'not moving a lot'
+
+    }
     for label in labels:
         col = labels_as_col[label]
-        legend_patches.append(mpatches.Patch(color=col, label=label, alpha=0.5))
+        if label == 'light':
+            continue
+        legend_patches.append(mpatches.Patch(color=col, label=ucl_labels[label], alpha=0.5))
     # create overall legend
     plt.legend(handles=legend_patches, bbox_to_anchor=(0., 0., 1., 1.),
         loc='center', ncol=min(4,len(legend_patches)), mode="best",
