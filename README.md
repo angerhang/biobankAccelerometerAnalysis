@@ -10,8 +10,12 @@ Then, create a python 3 environment using `conda create -n dreams python=3.6`. B
 make sure that you do `conda activate dreams` every single time. If you are on Windows, download [Cygwin](https://www.cygwin.com) too.
 
 Dependencies include: unix, java 8 ([Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)) and python 3.7 ([Anaconda's Python 3](https://www.anaconda.com/download/) or installation via [Brew](https://docs.python-guide.org/starting/install3/osx/) should do the trick).
+Do this in cygwin. When you instlal cygwin, make sure to search for `wget` when installing.
 ```
 $ bash utilities\downloadDataModelsWindows.sh
+```
+Do this in anaconda console with dreams env is activated
+```
 $ pip install --user .
 $ javac -cp java\JTransforms-3.1-with-dependencies.jar java\*.java
 ```
