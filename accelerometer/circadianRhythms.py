@@ -123,19 +123,24 @@ def calculateSleepEfficiency(e, epochPeriod, summary, sleep_diary):
     :return: Write dict <summary> key 'circadianRhythms_SleepEfficiency'
     """
 
+    pre_date = ""
     sleep_efficiencies = []
     for index, row in sleep_diary.iterrows():
         end_time = row['Time_out_of_bed']
         start_time = row['Time_in_bed']
         total_time_in_bed = (end_time - start_time).seconds//60
-        end_time
         valid_epoch = e.loc[(e.index >= start_time) & (e.index <= end_time)]
         sleep_length = len(valid_epoch[valid_epoch['label'] == 'sleep']) * epochPeriod/60
         sleep_efficiency = sleep_length/total_time_in_bed
         sleep_efficiency = min(sleep_efficiency, 1)
+        start_time = str(start_time.month) + '-' + str(start_time.day)
+        if pre_date == start_time:
+            start_time += "N2"
+        pre_date = start_time
+        key_name = 'circadianRhythms_sleep_efficiency' + start_time
+        summary[key_name] = sleep_efficiency
         sleep_efficiencies.append(sleep_efficiency)
-    summary['circadianRhythms_sleep_efficiency'] = np.mean(sleep_efficiencies)
-
+    summary['circadianRhythms_sleep_efficiency_mean'] = np.mean(sleep_efficiencies)
 
 def calculateISIV(e, summary):
     """  IS and IV are computed using hourly means according to the link below
