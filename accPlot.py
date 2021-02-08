@@ -55,6 +55,7 @@ def main():
                             type=float, help="""Proportion of plot labels take
                             if activity classification during imputed
                             period will be displayed (default : %(default)s)""")
+    parser.add_argument('--sleepDiary', default="", type=str)
 
     # check input is ok
     if len(sys.argv) < 3:
@@ -70,6 +71,7 @@ def main():
         activityModel=args.activityModel,
         useRecommendedImputation=args.useRecommendedImputation,
         imputedLabels=args.imputedLabels,
+        diary=args.sleepDiary,
         imputedLabelsHeight=args.imputedLabelsHeight)
 
 
@@ -80,6 +82,7 @@ def plotTimeSeries(
         activityModel="activityModels/walmsley-nov20.tar",
         useRecommendedImputation=True,
         imputedLabels=False,
+        diary="",
         imputedLabelsHeight=0.9):
     """Plot overall activity and classified activity types
 
@@ -107,6 +110,22 @@ def plotTimeSeries(
         tsFile, index_col='time',
         parse_dates=['time'], date_parser=accUtils.date_parser
     )
+    diary_df = ""
+    if diary != "":
+        diary_tz = 'Europe/London'
+        diary_df = pd.read_csv(diary)
+        diary_df['Time_in_bed'] = pd.to_datetime(diary_df['Time_in_bed'])
+        diary_df['Time_in_bed'] = diary_df['Time_in_bed'].dt.tz_localize(diary_tz)
+        diary_df['Time_out_of_bed'] = pd.to_datetime(diary_df['Time_out_of_bed'])
+        diary_df['Time_out_of_bed'] = diary_df['Time_out_of_bed'].dt.tz_localize(diary_tz)
+        in_markers = diary_df['Time_in_bed']
+        in_markers = in_markers.sort_values()
+        in_markers = in_markers.to_numpy()
+
+        out_markers = diary_df['Time_out_of_bed']
+        out_markers = out_markers.sort_values()
+        out_markers = out_markers.to_numpy()
+
     d['acc'] = d['acc'].rolling(window=12, min_periods=1).mean() # smoothing
     d['time'] = d.index.time
     ymin = d['acc'].min()
@@ -148,6 +167,8 @@ def plotTimeSeries(
 
     # create individual plot for each day
     i = 0
+    j = 0 # in idx
+    k = 0 # out idx
     ax_list = []
     for day, group in groupedDays:
         # set start and end to zero to avoid diagonal fill boxes
@@ -208,6 +229,24 @@ def plotTimeSeries(
         # set background colour to lightgray
         ax.set_facecolor('#d3d3d3')
 
+        # add sleep diary marker if present
+        if diary != "":
+            x = []
+            y = []
+            while j < len(in_markers) and in_markers[j].day == day.day:
+                y.append(ymin)
+                x.append(in_markers[j])
+                j += 1
+            ax.plot(x,y, '^m', markersize=10, zorder=10, clip_on=False)
+
+            x = []
+            y = []
+            while k < len(out_markers) and out_markers[k].day == day.day:
+                y.append(ymin)
+                x.append(out_markers[k])
+                k += 1
+            ax.plot(x,y, '^c', markersize=10, zorder=10, clip_on=False)
+
         # append to list and incrament list counter
         ax_list.append(ax)
         i += 1
@@ -219,7 +258,9 @@ def plotTimeSeries(
     # create a 'patch' for each legend entry
     legend_patches = [mpatches.Patch(color=labels_as_col['imputed'],
                                      label='not recorded', alpha=1.0),
-                      mlines.Line2D([],[],color='k',label='movement')]
+                      mlines.Line2D([],[],color='k',label='movement'),
+                      mlines.Line2D([],[], marker='^',linestyle='None',color='m',label='time to bed'),
+                      mlines.Line2D([],[], marker='^',linestyle='None',color='c',label='time out of bed')]
     # create lengend entry for each label
     ucl_labels = {
         'sleep': 'possible sleep',
