@@ -1,5 +1,4 @@
 """Module to generate overall activity summary from epoch data."""
-
 from accelerometer import accUtils
 from accelerometer import accClassification
 from accelerometer import circadianRhythms
@@ -18,7 +17,7 @@ def getActivitySummary(epochFile, nonWearFile, summary,
     startTime=None, endTime=None,
     epochPeriod=30, stationaryStd=13, minNonWearDuration=60,
     mgCutPointMVPA=100, mgCutPointVPA=425,
-    activityModel="activityModels/doherty-may20.tar",
+    activityModel="activityModels/walmsley-jan21.tar",
     intensityDistribution=False, useRecommendedImputation=True,
     psd=False, fourierFrequency=False, fourierWithAcc=False, m10l5=False,
     verbose=False):
@@ -117,6 +116,11 @@ def getActivitySummary(epochFile, nonWearFile, summary,
     get_wear_time_stats(e, epochPeriod, stationaryStd, minNonWearDuration,
         nonWearFile, summary)
 
+    # Calculate and include data quality statistics
+    get_total_reads(e, epochPeriod, summary)
+    get_clips(e, epochPeriod, summary)
+
+
     # Predict activity from features, and add label column
     if activityClassification:
         e, labels = accClassification.activityClassification(e, activityModel)
@@ -154,6 +158,17 @@ def getActivitySummary(epochFile, nonWearFile, summary,
 
 
 
+def get_clips(e, epochPeriod, summary):
+    summary['clipsBeforeCalibration'] = e['clipsBeforeCalibr'].sum().item()
+    summary['clipsAfterCalibration'] = e['clipsAfterCalibr'].sum().item()
+
+
+
+def get_total_reads(e, epochPeriod, summary):
+    summary['totalReads'] = e['rawSamples'].sum().item()
+
+
+
 def get_interrupts(e, epochPeriod, summary):
     """Identify if there are interrupts in the data recording
 
@@ -168,9 +183,7 @@ def get_interrupts(e, epochPeriod, summary):
     epochNs = epochPeriod * np.timedelta64(1, 's')
     interrupts = np.where(e.index.to_series().diff() > epochNs)[0]
     # Get duration of each interrupt in minutes
-    interruptMins = []
-    for i in interrupts:
-        interruptMins.append(e.index[i-1:i+1].to_series().diff() / np.timedelta64(1, 'm'))
+    interruptMins = [e.index[i-1:i+1].to_series().diff().sum(skipna=True).seconds / 60 for i in interrupts]
     # Record to output summary
     summary['errs-interrupts-num'] = len(interruptMins)
     summary['errs-interrupt-mins'] = accUtils.formatNum(np.sum(interruptMins), 1)

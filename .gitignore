@@ -19,6 +19,8 @@ __pycache__
 *.classpath
 *.npz
 *.npy
+<<<<<<< HEAD
 *.bin
 *~
 *.txt
+!referenceFiles/epoch.csv.gz

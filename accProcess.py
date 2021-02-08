@@ -44,13 +44,13 @@ def main():
                             minutes. Not to be confused with timezone offsets.
                             (default : %(default)s""")
     parser.add_argument('--startTime',
-                            metavar='e.g. 1991-01-01T23:59:59', default=None,
-                            type=str2dateSecond, help="""removes data before this
+                            metavar='e.g. 1991-01-01T23:59', default=None,
+                            type=str2date, help="""removes data before this
                             time (local) in the final analysis
                             (default : %(default)s)""")
     parser.add_argument('--endTime',
-                            metavar='e.g 1991-01-01T23:59:59', default=None,
-                            type=str2dateSecond, help="""removes data after this
+                            metavar='e.g 1991-01-01T23:59', default=None,
+                            type=str2date, help="""removes data after this
                             time (local) in the final analysis
                             (default : %(default)s)""")
     parser.add_argument('--timeSeriesDateColumn',
@@ -170,7 +170,7 @@ def main():
                             activity type
                             (default : %(default)s)""")
     parser.add_argument('--activityModel', type=str,
-                            default="activityModels/doherty-may20.tar",
+                            default="activityModels/walmsley-jan21.tar",
                             help="""trained activity model .tar file""")
 
     # circadian rhythm options
@@ -288,12 +288,17 @@ def main():
 
     # Check if we can write to the output folders
     for path in [
-        args.summaryFolder, args.nonWearFolder, args.epochFolder,
+        args.summaryFolder, args.nonWearFolder,
         args.stationaryFolder, args.timeSeriesFolder,
         args.rawFolder, args.npyFolder, args.outputFolder
     ]:
         assert os.access(path, os.W_OK), (
             f"Either folder '{path}' does not exist "
+            "or you do not have write permission"
+        )
+    if args.processInputFile: 
+        assert os.access(args.epochFolder, os.W_OK), (
+            f"Either folder '{args.epochFolder}' does not exist "
             "or you do not have write permission"
         )
 

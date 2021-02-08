@@ -6,7 +6,7 @@ import numpy as np
 import os
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-import sklearn.ensemble.forest as forest
+import sklearn.ensemble._forest as forest
 import sklearn.metrics as metrics
 from sklearn.metrics import confusion_matrix
 import joblib
@@ -15,7 +15,7 @@ import warnings
 
 
 def activityClassification(epochFile,
-    activityModel="activityModels/doherty-may20.tar"):
+    activityModel="activityModels/walmsley-nov20.tar"):
     """Perform classification of activity states from epoch feature data
 
     Based on a balanced random forest with a Hidden Markov Model containing
@@ -312,7 +312,7 @@ def viterbi(observations, states, priors, transitions, emissions,
 
 GLOBAL_INDICES = []
 def _parallel_build_trees(tree, forest, X, y, sample_weight, tree_idx, n_trees,
-                          verbose=0, class_weight=None):
+        verbose=0, class_weight=None, n_samples_bootstrap = None):
     """Monkeypatch scikit learn to use per-class balancing
 
     Private function used to fit a single tree in parallel.

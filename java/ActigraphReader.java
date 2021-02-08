@@ -78,7 +78,7 @@ public class ActigraphReader extends DeviceReader {
 
             // underscored are unused for now
             double sampleFreq = -1, accelerationScale = -1, _AccelerationMin, _AccelerationMax;
-            long stopDate = -1, firstSampleTime=-1;
+            long startDate = -1, stopDate = -1, firstSampleTime=-1;
             String serialNumber = "";
             String infoTimeShift = "00:00:00"; // default to be UTC time difference
 
@@ -107,8 +107,8 @@ public class ActigraphReader extends DeviceReader {
                 }
             }
 
-            System.out.println("Device's initial time shift: " + infoTimeShift);
-            System.out.println("Start date (local UNIX): " + firstSampleTime);
+            System.out.println("Device's initial offset: " + infoTimeShift);
+            System.out.println("Start date (local UNIX): " + startDate);
             System.out.println("Stop date (local UNIX): " + stopDate);
 
             accelerationScale = setAccelerationScale(serialNumber);
@@ -473,7 +473,8 @@ public class ActigraphReader extends DeviceReader {
         }
 
         LocalTime timeShift = LocalTime.parse(infoTimeShift);
-        long timeShiftMilli = 1000 * shiftSign * (timeShift.getHour() * 60 * 60 +
+
+        long timeShiftMilli = 1000 * (shiftSign * timeShift.getHour() * 60 * 60 +
                 timeShift.getMinute() * 60); // time shfit w.r.t. UTC
         return myTime - timeShiftMilli;
     }

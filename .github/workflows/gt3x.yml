@@ -29,9 +29,17 @@ jobs:
         run: |
           cd java
           java AccelerometerParser Tests/Resources/sampleV2.gt3x npyOutput:True  rawOutput:True timeZone:Brazil/West
+          java AccelerometerParser Tests/Resources/gt3xV1.gt3x npyOutput:True  rawOutput:True timeZone:Brazil/West
 
       - name: compare epoch output
         uses: tianhaoz95/mirror-action@v1.0.1
         with:
           original: "java/Tests/Resources/sampleV2EpochRef.csv"
           mirror: "java/Tests/Resources/sampleV2Epoch.csv"
+
+      - name: compare epoch output
+        uses: tianhaoz95/mirror-action@v1.0.1
+        with:
+          original: "java/Tests/Resources/gt3xV1EpochRef.csv"
+          mirror: "java/Tests/Resources/gt3xV1Epoch.csv"
+            
