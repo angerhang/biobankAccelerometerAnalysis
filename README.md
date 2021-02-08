@@ -35,7 +35,7 @@ using any text editor of your choice, you should find all the sleep parameters y
 `circadianRhythms_SleepEfficiency`, `circadianRhythms_IS`, `circadianRhythms_IV`, `circadianRhythms_lux`,
 `circadianRhythms_M10L5_Rel_AMP`, `circadianRhythms_M10AVG`, `circadianRhythms_L5AVG`, `circadianRhythms_M10_Onset`,
 `circadianRhythms_L5_Onset`.
-4. To generate the visu, run `python accPlot.py data\ucl-timeSeries.csv.gz data\ucl-plot.png`
+4. To generate the visu, run `python accPlot.py data\ucl-timeSeries.csv.gz data\ucl-plot.png --sleepDiary data\ucl_sleep_diary.csv`
 
 Sleep-diary style guide:
 You need to closely follow the csv file provided to make sure that you can get your parameter estimates properly.

@@ -234,10 +234,10 @@ def plotTimeSeries(
             x = []
             y = []
             while j < len(in_markers) and in_markers[j].day == day.day:
-                y.append(ymin)
+                y.append(ymax)
                 x.append(in_markers[j])
                 j += 1
-            ax.plot(x,y, '^m', markersize=10, zorder=10, clip_on=False)
+            ax.plot(x,y, 'vm', markersize=10, zorder=10, clip_on=False)
 
             x = []
             y = []
@@ -259,7 +259,7 @@ def plotTimeSeries(
     legend_patches = [mpatches.Patch(color=labels_as_col['imputed'],
                                      label='not recorded', alpha=1.0),
                       mlines.Line2D([],[],color='k',label='movement'),
-                      mlines.Line2D([],[], marker='^',linestyle='None',color='m',label='time to bed'),
+                      mlines.Line2D([],[], marker='v',linestyle='None',color='m',label='time to bed'),
                       mlines.Line2D([],[], marker='^',linestyle='None',color='c',label='time out of bed')]
     # create lengend entry for each label
     ucl_labels = {
