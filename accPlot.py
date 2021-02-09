@@ -239,20 +239,26 @@ def plotTimeSeries(
         # add sleep diary marker if present
         if diary != "":
             x = []
-            y = []
+            y_I = []
+            y_II = []
             while j < len(in_markers) and (in_markers[j]-timedelta(days=0.5)).day == day.day:
-                y.append(ymax)
+                y_I.append(ymax)
+                y_II.append(ymin)
                 x.append(in_markers[j])
                 j += 1
-            ax.plot(x,y, 'vm', markersize=10, zorder=10, clip_on=False)
+            ax.plot(x,y_I, 'vm', markersize=10, zorder=10, clip_on=False)
+            ax.plot(x,y_II, '^m', markersize=10, zorder=10, clip_on=False)
 
             x = []
-            y = []
+            y_I = []
+            y_II = []
             while k < len(out_markers) and (out_markers[k]-timedelta(days=0.5)).day == day.day:
-                y.append(ymin)
+                y_I.append(ymax)
+                y_II.append(ymin)
                 x.append(out_markers[k])
                 k += 1
-            ax.plot(x,y, '^c', markersize=10, zorder=10, clip_on=False)
+            ax.plot(x,y_I, 'vc', markersize=10, zorder=10, clip_on=False)
+            ax.plot(x,y_II, '^c', markersize=10, zorder=10, clip_on=False)
 
         # append to list and incrament list counter
         ax_list.append(ax)
@@ -266,7 +272,7 @@ def plotTimeSeries(
     legend_patches = [mpatches.Patch(color=labels_as_col['imputed'],
                                      label='not recorded', alpha=1.0),
                       mlines.Line2D([],[],color='k',label='movement'),
-                      mlines.Line2D([],[], marker='v',linestyle='None',color='m',label='time to bed'),
+                      mlines.Line2D([],[], marker='^',linestyle='None',color='m',label='time to bed'),
                       mlines.Line2D([],[], marker='^',linestyle='None',color='c',label='time out of bed')]
     # create lengend entry for each label
     ucl_labels = {
