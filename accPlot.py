@@ -8,6 +8,8 @@ from datetime import datetime, timedelta, time
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
+import matplotlib.dates as dates
+
 import numpy as np
 import pandas as pd
 import sys
@@ -127,7 +129,7 @@ def plotTimeSeries(
         out_markers = out_markers.to_numpy()
 
     d['acc'] = d['acc'].rolling(window=12, min_periods=1).mean() # smoothing
-    d['time'] = d.index.time
+    d['time'] = d.index
     ymin = d['acc'].min()
     ymax = d['acc'].max()
 
@@ -149,7 +151,9 @@ def plotTimeSeries(
     convert_date = np.vectorize(lambda day, x: matplotlib.dates.date2num(datetime.combine(day, x)))
 
     # number of rows to display in figure (all days + legend)
-    d['date'] = d.index.date
+    d['new_date'] = (d.index - timedelta(days=0.5)).date
+    d['new_time'] = (d.index - timedelta(days=0.5))
+
     if not useRecommendedImputation:
         d = d[d['imputed']==0] # if requested, do not show imputed values
 
@@ -158,7 +162,7 @@ def plotTimeSeries(
     else:
         labelsPosition = 1
 
-    groupedDays = d[['acc','time','imputed'] + labels].groupby(by=d['date'])
+    groupedDays = d[['acc','time','imputed', 'new_time'] + labels].groupby(by=d['new_date'])
     nrows = len(groupedDays) + 1
 
     # create overall figure
@@ -176,8 +180,10 @@ def plotTimeSeries(
         group['imputed'].values[-1] = 0
 
         # retrieve time series data for this day
-        timeSeries = convert_date(day, group['time'])
-        # and then plot time series data for this day
+        mytime = group['time'].tolist()
+        timeSeries = dates.date2num(mytime)
+
+    # and then plot time series data for this day
         plt.subplot(nrows, 1, i+1)
         plt.plot(timeSeries, group['acc'], c='k')
         if imputedLabels:
@@ -198,8 +204,9 @@ def plotTimeSeries(
                 colors=[labels_as_col[l] for l in labels],
                 alpha=0.5, edgecolor="none")
         # add date label to left hand side of each day's activity plot
+        nextday = day+timedelta(days=1)
         plt.title(
-            day.strftime("%A,\n%d %B"), weight='bold',
+            day.strftime("%a,%d")+'-'+nextday.strftime("%a,%d\n%b"), weight='bold',
             x=-.2, y=0.5,
             horizontalalignment='left',
             verticalalignment='center',
@@ -212,13 +219,13 @@ def plotTimeSeries(
         ax.get_xaxis().grid(True, which='major', color='grey', alpha=0.5)
         ax.get_xaxis().grid(True, which='minor', color='grey', alpha=0.25)
         # set x and y-axes
-        ax.set_xlim((datetime.combine(day,time(0, 0, 0, 0)),
-            datetime.combine(day + timedelta(days=1), time(0, 0, 0, 0))))
-        ax.set_xticks(pd.date_range(start=datetime.combine(day,time(0, 0, 0, 0)),
-            end=datetime.combine(day + timedelta(days=1), time(0, 0, 0, 0)),
+        ax.set_xlim((datetime.combine(day,time(12, 0, 0, 0)),
+            datetime.combine(day+timedelta(days=1), time(12, 0, 0, 0))))
+        ax.set_xticks(pd.date_range(start=datetime.combine(day,time(12, 0, 0, 0)),
+            end=datetime.combine(day+timedelta(days=1), time(12, 0, 0, 0)),
             freq='4H'))
-        ax.set_xticks(pd.date_range(start=datetime.combine(day,time(0, 0, 0, 0)),
-            end=datetime.combine(day + timedelta(days=1), time(0, 0, 0, 0)),
+        ax.set_xticks(pd.date_range(start=datetime.combine(day,time(12, 0, 0, 0)),
+            end=datetime.combine(day+timedelta(days=1), time(12, 0, 0, 0)),
             freq='1H'), minor=True)
         ax.set_ylim((ymin, ymax))
         ax.get_yaxis().set_ticks([]) # hide y-axis lables
@@ -233,7 +240,7 @@ def plotTimeSeries(
         if diary != "":
             x = []
             y = []
-            while j < len(in_markers) and in_markers[j].day == day.day:
+            while j < len(in_markers) and (in_markers[j]-timedelta(days=0.5)).day == day.day:
                 y.append(ymax)
                 x.append(in_markers[j])
                 j += 1
@@ -241,7 +248,7 @@ def plotTimeSeries(
 
             x = []
             y = []
-            while k < len(out_markers) and out_markers[k].day == day.day:
+            while k < len(out_markers) and (out_markers[k]-timedelta(days=0.5)).day == day.day:
                 y.append(ymin)
                 x.append(out_markers[k])
                 k += 1
@@ -292,6 +299,7 @@ def plotTimeSeries(
     # add hour labels to top of plot
     hours2Display = range(0, 24, 4)
     hrLabels = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00']
+    hrLabels = ['12:00 PM', '04:00PM', '08:00PM', '12:00AM', '04:00AM', '08:00AM', '12:00PM']
     ax_list[0].set_xticklabels(hrLabels)
     ax_list[0].tick_params(labelbottom=False, labeltop=True, labelleft=False)
 
