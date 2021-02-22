@@ -79,9 +79,9 @@ def processInputFileToEpoch(inputFile, timeZone, timeShift,
     summary['file-size'] = os.path.getsize(inputFile)
     summary['file-deviceID'] = getDeviceId(inputFile)
     useJava = True
-    # javaClassPath = "java:"+os.path.join("java", "JTransforms-3.1-with-dependencies.jar")
-    javaClassPath = 'java;'+os.path.join("java", "JTransforms-3.1-with-dependencies.jar")
-    javaClassPaht = '"' + javaClassPath + '"'
+    javaClassPath = "java:"+os.path.join("java", "JTransforms-3.1-with-dependencies.jar")
+    # javaClassPath = 'java;'+os.path.join("java", "JTransforms-3.1-with-dependencies.jar")
+    # javaClassPaht = '"' + javaClassPath + '"'
     staticStdG = stationaryStd / 1000.0 #java expects units of G (not mg)
 
     if xyzIntercept != [0, 0 ,0] or xyzSlope != [1, 1, 1] or xyzTemp != [0, 0, 0]:

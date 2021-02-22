@@ -10,16 +10,15 @@ Then, create a python 3 environment using `conda create -n dreams python=3.6`. B
 make sure that you do `conda activate dreams` every single time. If you are on Windows, download [Cygwin](https://www.cygwin.com) too.
 
 Dependencies include: unix, java 8 ([Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)) and python 3.7 ([Anaconda's Python 3](https://www.anaconda.com/download/) or installation via [Brew](https://docs.python-guide.org/starting/install3/osx/) should do the trick).
-Do this in cygwin. When you instlal cygwin, make sure to search for `wget` when installing.
 ```
-$ bash utilities\downloadDataModelsWindows.sh
+$ bash utilities/downloadDataModels.sh 
 ```
-Do this in anaconda console with dreams env is activated
+
+Do this in anaconda console with dreams env is activated e.g. `conda activative dreams-env`
 ```
 $ pip install --user .
-$ javac -cp java\JTransforms-3.1-with-dependencies.jar java\*.java
+$ javac -cp java/JTransforms-3.1-with-dependencies.jar java/*.java
 ```
-You might want to run the bash script in Cygwin if you are on Windows.
 
 ### UCL project setup
 You need two files from one participant to generate the stats and plot that you want. 
@@ -28,14 +27,18 @@ You need two files from one participant to generate the stats and plot that you 
 
 Steps to follow:
 1. Move these two files into the `data` folder.
-2. Run `python accProcess.py data\ucl.cwa.gz --circadianRhythm True --sleepDiaryPath data\ucl_sleep_diary.csv`
+2. Run `python accProcess.py data/ucl.cwa.gz --circadianRhythm True --sleepDiaryPath data/ucl_sleep_diary.csv`
 Please replace the cwa and diary name accordingly. 
 3.  You should generate something like `data\ucl-summary.json` after a couple of minutes. Open it 
 using any text editor of your choice, you should find all the sleep parameters you need. Just search for
 `circadianRhythms_SleepEfficiency`, `circadianRhythms_IS`, `circadianRhythms_IV`, `circadianRhythms_lux`,
 `circadianRhythms_M10L5_Rel_AMP`, `circadianRhythms_M10AVG`, `circadianRhythms_L5AVG`, `circadianRhythms_M10_Onset`,
 `circadianRhythms_L5_Onset`.
-4. To generate the visu, run `python accPlot.py data\ucl-timeSeries.csv.gz data\ucl-plot.png --sleepDiary data\ucl_sleep_diary.csv`
+4. To generate the visu, run `python accPlot.py data/ucl-timeSeries.csv.gz data/ucl-plot.png --sleepDiary data/ucl_sleep_diary.csv`
+
+
+Note that if your sleep diary dates are wrong or you don't have a sleep diary, then you don't need to input 
+the sleep diary path when using the commands above.
 
 Sleep-diary style guide:
 You need to closely follow the csv file provided to make sure that you can get your parameter estimates properly.

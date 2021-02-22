@@ -218,25 +218,32 @@ def calculateM10L5(e, epochPeriod, summary):
     """
     TEN_HOURS = int(10*60*60/epochPeriod)
     FIVE_HOURS = int(5*60*60/epochPeriod)
-    num_days = (e.index[-1] - e.index[0]).days+1  # add the last day
+    num_days = (e.index[-1].day - e.index[0].day)+1  # add the last day
            
     days_split = []
-    for n in range(num_days+1):
+    for n in range(num_days):
         # creates a new list which is used to identify the 24 hour periods in the data frame
         days_split += [n for x in e.index if (e.index[0] + timedelta(days=n)).date() == x.date()]
     day_start_idx = np.where(np.roll(days_split, 1) != days_split)[0]
 
     dct = {}
-    for i in range(num_days+1):
+    for i in range(num_days):
         # create new lists with the acceleration data from each 24 hour period
         dct['day_%s' %i] = [e.loc[:,'accImputed'][n] for n in range(len(days_split)) if days_split[n]==i]    
     dct_10 = {}
     dct_5 = {}
 
+    valid_5_day = 0
+    valid_10_day = 0
     for i in dct:
         #  sums each 10 or 5 hour window with steps of 30s for each day
         dct_10['%s' % i] = [sum(dct['%s' % i][j:j+TEN_HOURS]) for j in range(len(dct['%s' % i])-TEN_HOURS)]
         dct_5['%s' % i] = [sum(dct['%s' % i][j:j+FIVE_HOURS]) for j in range(len(dct['%s' % i])-FIVE_HOURS)]
+
+        if len(dct_10['%s' % i]) > 0:
+            valid_10_day += 1
+        if len(dct_5['%s' % i]) > 0:
+            valid_5_day += 1
     avg_10 = {}
     m10_onsets = []
     avg_5 = {}
@@ -244,30 +251,39 @@ def calculateM10L5(e, epochPeriod, summary):
 
     # Average acceleration (for each 30s) for the max and min windows
     k = 0
-    for i in dct:
-        m10_day_list = dct_10['%s' % i]
-        max_idx = np.argmax(m10_day_list) + day_start_idx[k]
-        m10_onsets.append(e.index[max_idx])
-        avg_10['%s' % i] = (np.max(m10_day_list))/TEN_HOURS
+    if valid_10_day > 0 and valid_5_day > 0:
 
-        l5_day_list = dct_5['%s' % i]
-        max_idx = np.argmin(l5_day_list) + day_start_idx[k]
-        l5_onsets.append(e.index[max_idx])
-        avg_5['%s' % i] = (np.min(l5_day_list))/FIVE_HOURS
-        k += 1
+        for i in dct:
+            m10_day_list = dct_10['%s' % i]
+            max_idx = np.argmax(m10_day_list) + day_start_idx[k]
+            m10_onsets.append(e.index[max_idx])
+            avg_10['%s' % i] = (np.max(m10_day_list))/TEN_HOURS
 
-    if num_days > 0:
-        m10 = sum(avg_10.values())/len(dct_10)
-        l5 = sum(avg_5.values())/len(dct_5)
-        rel_amp = (m10-l5)/(m10+l5)
+            l5_day_list = dct_5['%s' % i]
+            max_idx = np.argmin(l5_day_list) + day_start_idx[k]
+            l5_onsets.append(e.index[max_idx])
+            avg_5['%s' % i] = (np.min(l5_day_list))/FIVE_HOURS
+            k += 1
+
+        if num_days > 0:
+            m10 = sum(avg_10.values())/len(dct_10)
+            l5 = sum(avg_5.values())/len(dct_5)
+            rel_amp = (m10-l5)/(m10+l5)
+        else:
+            rel_amp = 'NA_too_few_days'
+
+        l5_onsets = [min2hour(onset.hour*60 + onset.minute) for onset in l5_onsets]
+        m10_onsets = [min2hour(onset.hour*60 + onset.minute) for onset in m10_onsets]
+
+        summary['circadianRhythms_M10L5_Rel_AMP'] = rel_amp
+        summary['circadianRhythms_M10AVG'] = m10
+        summary['circadianRhythms_L5AVG'] = l5
+        summary['circadianRhythms_M10_Onset'] = mean_time(m10_onsets)
+        summary['circadianRhythms_L5_Onset'] = mean_time(l5_onsets)
+
     else:
-        rel_amp = 'NA_too_few_days'
-
-    l5_onsets = [min2hour(onset.hour*60 + onset.minute) for onset in l5_onsets]
-    m10_onsets = [min2hour(onset.hour*60 + onset.minute) for onset in m10_onsets]
-
-    summary['circadianRhythms_M10L5_Rel_AMP'] = rel_amp
-    summary['circadianRhythms_M10AVG'] = m10
-    summary['circadianRhythms_L5AVG'] = l5
-    summary['circadianRhythms_M10_Onset'] = mean_time(m10_onsets)
-    summary['circadianRhythms_L5_Onset'] = mean_time(l5_onsets)
+        summary['circadianRhythms_M10L5_Rel_AMP'] = 0
+        summary['circadianRhythms_M10AVG'] = 0
+        summary['circadianRhythms_L5AVG'] = 0
+        summary['circadianRhythms_M10_Onset'] = 0
+        summary['circadianRhythms_L5_Onset'] = 0
