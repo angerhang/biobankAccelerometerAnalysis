@@ -237,6 +237,8 @@ def calculateM10L5(e, epochPeriod, summary):
     valid_10_day = 0
     for i in dct:
         #  sums each 10 or 5 hour window with steps of 30s for each day
+        if len(dct['%s' % i]) < TEN_HOURS:
+            continue
         dct_10['%s' % i] = [sum(dct['%s' % i][j:j+TEN_HOURS]) for j in range(len(dct['%s' % i])-TEN_HOURS)]
         dct_5['%s' % i] = [sum(dct['%s' % i][j:j+FIVE_HOURS]) for j in range(len(dct['%s' % i])-FIVE_HOURS)]
 
@@ -253,16 +255,16 @@ def calculateM10L5(e, epochPeriod, summary):
     k = 0
     if valid_10_day > 0 and valid_5_day > 0:
 
-        for i in dct:
-            m10_day_list = dct_10['%s' % i]
+        for key in dct_10.keys():
+            m10_day_list = dct_10[key]
             max_idx = np.argmax(m10_day_list) + day_start_idx[k]
             m10_onsets.append(e.index[max_idx])
-            avg_10['%s' % i] = (np.max(m10_day_list))/TEN_HOURS
+            avg_10[key] = (np.max(m10_day_list))/TEN_HOURS
 
-            l5_day_list = dct_5['%s' % i]
+            l5_day_list = dct_5[key]
             max_idx = np.argmin(l5_day_list) + day_start_idx[k]
             l5_onsets.append(e.index[max_idx])
-            avg_5['%s' % i] = (np.min(l5_day_list))/FIVE_HOURS
+            avg_5[key] = (np.min(l5_day_list))/FIVE_HOURS
             k += 1
 
         if num_days > 0:
