@@ -17,6 +17,8 @@ parser.add_argument('--file_list',
                     all the files that should be extracted""")
 parser.add_argument('--raw_dir',
                     type=str, help="""Where the raw file is stored""")
+parser.add_argument('--raw_date_dir',
+                    type=str, help="""Where the raw file is stored""")
 parser.add_argument('--result_dir',
                     type=str, help="""Where the result csv should be stored""")
 parser.add_argument('--cmdFile',
@@ -32,13 +34,16 @@ def main():
     with open(cmdFile, 'w') as f:
         for file_path in file_list:
             file_name = file_path.split('/')[-1][:-7]
+            npy_file_name = file_name + '.npy'
+            time_file_name = file_name + '-time.npy'
             file_name = file_name + '.csv.gz'
             path2load = os.path.join(args.raw_dir, file_name)
 
             cmd = [
                 'python3 ss_extraction.py',
                 '--raw_file_path "{:s}"'.format(path2load),
-                '--result_path "{:s}"'.format(os.path.join(args.result_dir, file_name))
+                '--result_path "{:s}"'.format(os.path.join(args.result_dir, npy_file_name)),
+                '--time_path "{:s}"'.format(os.path.join(args.raw_date_dir, time_file_name))
             ]
 
             cmd = ' '.join(cmd)
